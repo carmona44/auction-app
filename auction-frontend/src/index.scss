@@ -29,10 +29,12 @@ code {
 nav a {
   color: #000;
   text-decoration: underline;
+
   &.logout-link {
     text-decoration: none;
     font-size: 14px;
   }
+
   &.active {
     color: #61dafb;
     text-decoration: none;
@@ -48,8 +50,6 @@ ul {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding-left: 10px;
-  padding-right: 10px;
   margin-bottom: 0;
 }
 

@@ -11,7 +11,7 @@ export default function PublicLayout() {
   return (
     <div className="app">
       <header className="header">
-        <p className="py-3">Auction app</p>
+        <p className="py-3 px-3">Auction app</p>
       </header>
       <Outlet />
     </div>

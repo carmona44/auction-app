@@ -14,7 +14,7 @@ export default function PrivateLayout() {
     <div className="app">
       <header className="header">
         <nav>
-          <ul className="link-container">
+          <ul className="px-3 link-container">
             <li>
               <p className="mt-3">Auction app</p>
             </li>
