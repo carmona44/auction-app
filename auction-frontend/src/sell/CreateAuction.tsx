@@ -4,9 +4,10 @@ import { Plus } from 'react-bootstrap-icons'
 import './CreateAuction.scss'
 import { CreateAuctionModal } from './CreateAuctionModal'
 import { AuctionTile } from '../buy/Tile'
-import { useActionData, useLoaderData } from 'react-router-dom'
+import { Navigate, useActionData, useLoaderData, useLocation } from 'react-router-dom'
 import { Auction } from '../buy/Auction'
 import ToastMessage from '../util/Toast'
+import { JustLoggedInState } from '../auth/PublicLayout'
 
 export const loader = async () => {
   const userId = localStorage.getItem('user')
@@ -26,9 +27,15 @@ type CreateAuctionData = {
 }
 
 export default function CreateAuction() {
+  const location = useLocation();
   const [modalShow, setModalShow] = useState(false)
   const { auctions } = useLoaderData() as LoadAuctionData
   const createData = useActionData() as CreateAuctionData
+  const { justLoggedIn } = location.state as JustLoggedInState || false
+
+  if (!auctions?.length && justLoggedIn) {
+    return <Navigate to="/buyer" />
+  }
 
   return (
     <Container>

@@ -42,6 +42,7 @@ const router = createBrowserRouter(
           />
         </Route>
         <Route path="seller" element={<Seller />}>
+          <Route index element={<Navigate to="create" />} />
           <Route
             path="create"
             element={<CreateAuction />}

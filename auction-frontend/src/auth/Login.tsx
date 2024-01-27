@@ -17,6 +17,7 @@ export async function action({ request }: { request: Request }) {
     headers: { 'Content-Type': 'application/json' },
     body: body,
   })
+
   if (res.status === 400) {
     const error = await res.json()
     return { error }
