@@ -3,6 +3,7 @@ import { Await, defer, Outlet, useLoaderData } from 'react-router-dom'
 import { AuthProvider, useAuth } from './auth/AuthProvider'
 import { Alert, Spinner } from 'react-bootstrap'
 import { User } from './auth/User'
+import '@fontsource/montserrat';
 
 export const loader = async () => {
   const userId = localStorage.getItem('user')
