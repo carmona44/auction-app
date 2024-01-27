@@ -98,10 +98,10 @@ export function CreateBidModal({
                   className="mb-3"
                   controlId="formBasicEmail"
                 >
-                  <Form.Label sm={4} column>
-                    Deadline
+                  <Form.Label sm={6} column>
+                    Is a maximum offer
                   </Form.Label>
-                  <Col sm={8} className="align-self-center">
+                  <Col sm={4} className="align-self-center">
                     <Form.Check
                       id="custom-switch"
                       name="isMaximum"
