@@ -5,6 +5,7 @@ import reportWebVitals from './reportWebVitals'
 import {
   createBrowserRouter,
   createRoutesFromElements,
+  Navigate,
   Route,
   RouterProvider,
 } from 'react-router-dom'
@@ -32,6 +33,7 @@ const router = createBrowserRouter(
       <Route element={<PrivateLayout />}>
         <Route path="/" element={<Home />}></Route>
         <Route path="buyer" element={<Buyer />}>
+          <Route index element={<Navigate to="auctions" />} />
           <Route
             path="auctions"
             element={<AuctionDashboard />}
