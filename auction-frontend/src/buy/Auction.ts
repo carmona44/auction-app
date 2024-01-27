@@ -15,11 +15,12 @@ export enum ItemCategory {
   OTHER = 'OTHER',
 }
 
-enum AuctionStatus {
+export enum AuctionStatus {
   ON_GOING = 'ON_GOING',
   ON_HOLD = 'ON_HOLD',
   FINISHED = 'FINISHED',
 }
+
 export interface Auction {
   id: string
   createdAt: string
