@@ -8,6 +8,7 @@ import { Navigate, useActionData, useLoaderData, useLocation } from 'react-route
 import { Auction } from '../buy/Auction'
 import ToastMessage from '../util/Toast'
 import { JustLoggedInState } from '../auth/PublicLayout'
+import { SellerAuctionModal } from './SellerAuctionModal'
 
 export const loader = async () => {
   const userId = localStorage.getItem('user')
@@ -32,6 +33,8 @@ export default function CreateAuction() {
   const { auctions } = useLoaderData() as LoadAuctionData
   const createData = useActionData() as CreateAuctionData
   const { justLoggedIn } = location.state as JustLoggedInState || false
+  const [auctionModalShow, setAuctionModalShow] = useState(false)
+  const [selected, setSelected] = useState<Auction | null>(null)
 
   if (!auctions?.length && justLoggedIn) {
     return <Navigate to="/buyer" />
@@ -50,9 +53,24 @@ export default function CreateAuction() {
       </div>
       <ListGroup>
         {auctions.map((auction) => (
-          <AuctionTile key={auction.id} auction={auction} />
+          <div
+            key={auction.id}
+            onClick={() => {
+              setSelected(auction)
+              setAuctionModalShow(true)
+            }}
+          >
+            <AuctionTile auction={auction} />
+          </div>
         ))}
       </ListGroup>
+      {auctionModalShow && (
+        <SellerAuctionModal
+          auction={selected as Auction}
+          show={auctionModalShow}
+          onHide={() => setAuctionModalShow(false)}
+        />
+      )}
       <CreateAuctionModal show={modalShow} onHide={() => setModalShow(false)} />
       <div className="position-absolute" style={{ top: '10vh', right: 10 }}>
         <ToastMessage

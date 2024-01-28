@@ -15,3 +15,13 @@ router.post('/', async (req: Request, res: Response) => {
     return res.status(400).json({ message: e.message })
   }
 })
+
+router.get('/bidders', async (req: Request, res: Response) => {
+  const { auctionId } = req.query
+  const count = await DI.bidRepository.count(
+    { auction: auctionId },
+    { groupBy: "bidder" },
+  ) || 0
+
+  res.json(count)
+})
