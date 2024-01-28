@@ -1,4 +1,5 @@
 import { User } from '../auth/User'
+import { Bid } from '../bid/bid'
 
 export enum ItemCategory {
   VEHICLE = 'VEHICLE',
@@ -32,6 +33,7 @@ export interface Auction {
   startPrice: number
   terminateAt: string
   status: AuctionStatus
+  bids?: Bid[]
 }
 
 type ValuePiece = Date | null

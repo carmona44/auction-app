@@ -21,19 +21,7 @@ export function SellerAuctionModal({
 }) {
   const { user } = useAuth()
   const hasFinished: boolean = auction.status === AuctionStatus.FINISHED
-  const [bidders, setBidders] = useState(0);
-
-  const biddersLoader = async (): Promise<void> => {
-    const bidders: number = await fetch(
-      `${process.env.REACT_APP_API_URL}/bids/bidders?auctionId=${auction.id}`,
-    ).then((res) => res.json())
-
-    setBidders(bidders || 0)
-  }
-
-  useEffect(() => {
-    biddersLoader();
-  }, []);
+  const bidders = Array.from(new Set(auction.bids?.map(bid => bid.bidder))) as unknown as string[]
 
   return (
     <Modal
@@ -83,7 +71,7 @@ export function SellerAuctionModal({
                   controlId="formBasicEmail"
                 >
                   <Form.Label column>
-                    Number of bidders: {bidders}
+                    Number of bidders: {bidders?.length || 0}
                   </Form.Label>
                 </Form.Group>
               </Col>

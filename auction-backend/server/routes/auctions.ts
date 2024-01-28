@@ -21,9 +21,14 @@ router.get('/buyer/:id', async (req: Request, res: Response) => {
 })
 
 router.get('/seller/:id', async (req: Request, res: Response) => {
-  const auctions = await DI.auctionRepository.find({
-    seller: req.params.id,
-  })
+  const auctions = await DI.auctionRepository.find(
+    {
+      seller: req.params.id,
+    },
+    {
+      populate: ['bids']
+    }
+  )
   res.json(auctions)
 })
 
