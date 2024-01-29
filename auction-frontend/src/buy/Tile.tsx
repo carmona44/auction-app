@@ -12,7 +12,7 @@ export function AuctionTile({ auction }: { auction: Auction }) {
   const { title, description, terminateAt, status, seller } = auction
   const hasFinished: boolean = status === AuctionStatus.FINISHED
   const isSeller: boolean = user?.id === seller?.id
-  const { currentPrice, highestBid } = getHighestBid(auction.bids)
+  const { currentPrice, highestBid } = getHighestBid(auction)
 
   return (
     <ListGroupItem

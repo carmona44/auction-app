@@ -23,7 +23,7 @@ export function SellerAuctionModal({
   const { user } = useAuth()
   const hasFinished: boolean = auction.status === AuctionStatus.FINISHED
   const bidders = Array.from(new Set(auction.bids?.map(bid => bid.bidder))) as unknown as string[]
-  const { currentPrice, highestBid } = getHighestBid(auction.bids)
+  const { currentPrice, highestBid } = getHighestBid(auction)
 
   return (
     <Modal

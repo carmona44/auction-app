@@ -10,17 +10,24 @@ import 'react-clock/dist/Clock.css'
 import { timeLeft } from '../util/format-helper'
 import { useAuth } from '../auth/AuthProvider'
 import { getHighestBid } from '../util/highest-bid-helper'
+import { checkIsValidBid } from '../util/validate-bid-helper'
 
 export async function action({ request }: { request: Request }) {
   const formData = await request.formData()
   const { price, isMaximum, bidder, auction } = Object.fromEntries(formData)
+  const parsedAuction: Auction = JSON.parse(auction.toString())
 
   const body = JSON.stringify({
     price,
     isMaximum,
     bidder,
-    auction,
+    auction: parsedAuction.id,
   })
+
+  const isValidBid: boolean = checkIsValidBid(price.toString(), bidder.toString(), parsedAuction)
+  if (!isValidBid) {
+    return {};
+  }
 
   const res = await fetch(`${process.env.REACT_APP_API_URL}/bids`, {
     method: 'POST',
@@ -41,7 +48,7 @@ export function CreateBidModal({
   onHide: () => void
 }) {
   const { user } = useAuth()
-  const { currentPrice, highestBid } = getHighestBid(auction.bids)
+  const { currentPrice, highestBid } = getHighestBid(auction)
 
   return (
     <Modal
@@ -87,9 +94,11 @@ export function CreateBidModal({
                   </Form.Label>
                   <Col sm={4}>
                     <Form.Control
-                      type="text"
+                      type="number"
                       placeholder="€"
                       name="price"
+                      min={currentPrice + 1}
+                      defaultValue={currentPrice + 1}
                       required
                     />
                   </Col>
@@ -115,7 +124,7 @@ export function CreateBidModal({
               </Col>
             </Row>
             <Form.Control name="bidder" defaultValue={user?.id} hidden />
-            <Form.Control name="auction" defaultValue={auction.id} hidden />
+            <Form.Control name="auction" defaultValue={JSON.stringify(auction)} hidden />
           </Container>
         </Modal.Body>
         <Modal.Footer className="justify-content-between px-5">

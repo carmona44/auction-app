@@ -1,11 +1,13 @@
 import { Bid } from "../bid/bid"
+import { Auction } from "../buy/Auction";
 
-export const getHighestBid = (bids: Bid[]): { currentPrice: number, highestBid: Bid | undefined } => {
+export const getHighestBid = (auction: Auction): { currentPrice: number, highestBid: Bid | undefined } => {
+  const bids: Bid[] = auction.bids;
   let currentPrice: number = 0;
   let highestBid: Bid | undefined = undefined;
 
   if (!bids?.length) {
-    return { currentPrice, highestBid };
+    return { currentPrice: auction.startPrice, highestBid };
   }
 
   highestBid = bids[0];
