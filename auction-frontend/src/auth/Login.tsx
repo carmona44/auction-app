@@ -1,4 +1,4 @@
-import React, { useEffect, useMemo } from 'react'
+import React, { useEffect, useMemo, useState } from 'react'
 import { Form as RouterForm, useActionData } from 'react-router-dom'
 import Form from 'react-bootstrap/Form'
 import { Container } from 'react-bootstrap'
@@ -30,6 +30,7 @@ export async function action({ request }: { request: Request }) {
 export default function Login() {
   const actionData = useActionData() as Record<string, User | Error>
   const { login } = useAuth()
+  const [toastId, setToastId] = useState(0);
 
   const errorMessage = useMemo(
     () => (actionData?.error && (actionData.error as Error))?.message,
@@ -39,6 +40,9 @@ export default function Login() {
   useEffect(() => {
     if (actionData?.user) {
       login(actionData.user as User)
+    }
+    if (actionData?.error) {
+      setToastId(Date.now())
     }
   }, [actionData])
 
@@ -67,13 +71,13 @@ export default function Login() {
           </Form.Group>
         </RouterForm>
       </div>
-      <div className="position-absolute" style={{ top: '10vh', right: 10 }}>
+      {actionData?.error && (
         <ToastMessage
-          show={!!(actionData?.error as Error)}
+          id={toastId}
           message={errorMessage}
           bg="danger"
         />
-      </div>
+      )}
     </Container>
   )
 }

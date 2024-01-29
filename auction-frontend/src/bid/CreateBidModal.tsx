@@ -45,7 +45,7 @@ export function CreateBidModal({
 }: {
   auction: Auction
   show: boolean
-  onHide: () => void
+  onHide: Function
 }) {
   const { user } = useAuth()
   const { currentPrice, highestBid } = getHighestBid(auction)
@@ -57,7 +57,7 @@ export function CreateBidModal({
       aria-labelledby="contained-modal-title-vcenter"
       centered
     >
-      <RouterForm method="post" onSubmit={onHide}>
+      <RouterForm method="post" onSubmit={() => onHide()}>
         <Modal.Header className="justify-content-center">
           <Modal.Title id="contained-modal-title-vcenter">
             Bid on auction
@@ -131,7 +131,7 @@ export function CreateBidModal({
           <Button variant="primary" type="submit">
             Bid
           </Button>
-          <Button variant="secondary" type="button" onClick={onHide}>
+          <Button variant="secondary" type="button" onClick={() => onHide('cancel')}>
             Cancel
           </Button>
         </Modal.Footer>

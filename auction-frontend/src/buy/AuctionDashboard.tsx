@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react'
 import { useActionData, useLoaderData } from 'react-router-dom'
 import { Auction } from './Auction'
 import { AuctionTile } from './Tile'
-import { Container, Spinner } from 'react-bootstrap'
+import { Container, Spinner, ToastContainer } from 'react-bootstrap'
 import InfiniteScroll from 'react-infinite-scroll-component'
 import { CreateBidModal } from '../bid/CreateBidModal'
 import { Bid } from '../bid/bid'
@@ -33,6 +33,14 @@ export default function AuctionDashboard() {
   const [hasMore, setHasMore] = useState(true)
   const [modalShow, setModalShow] = useState(false)
   const [selected, setSelected] = useState<Auction | null>(null)
+  const [toastId, setToastId] = useState(0);
+
+  const handleHideModal = (event: string) => {
+    setModalShow(false);
+    if (event !== 'cancel') {
+      setToastId(Date.now());
+    }
+  };
 
   useEffect(() => {
     setData(auctions)
@@ -88,16 +96,14 @@ export default function AuctionDashboard() {
         <CreateBidModal
           auction={selected as Auction}
           show={modalShow}
-          onHide={() => setModalShow(false)}
+          onHide={handleHideModal}
         />
       )}
-      <div className="position-absolute" style={{ top: '10vh', right: 10 }}>
-        <ToastMessage
-          show={!!createData}
-          message={`You successfully created on ${selected?.title}`}
-          bg="success"
-        />
-      </div>
+      <ToastMessage
+        id={toastId}
+        message={createData?.bid ? `You successfully created on ${selected?.title}` : 'Invalid bid'}
+        bg={createData?.bid ? "success" : "danger"}
+      />
     </Container>
   )
 }

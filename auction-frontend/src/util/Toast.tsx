@@ -1,34 +1,53 @@
-import React, { useEffect, useState } from 'react'
-import Toast from 'react-bootstrap/Toast'
-import ToastHeader from 'react-bootstrap/ToastHeader'
-import ToastBody from 'react-bootstrap/ToastBody'
+import React, { useEffect, useState } from 'react';
+import Toast from 'react-bootstrap/Toast';
+import ToastContainer from 'react-bootstrap/ToastContainer';
+import ToastHeader from 'react-bootstrap/ToastHeader';
+import ToastBody from 'react-bootstrap/ToastBody';
 
 export default function ToastMessage({
-  show,
+  id,
   message,
   bg,
 }: {
-  show: boolean
-  message: string
-  bg: string
+  id: number;
+  message: string;
+  bg: string;
 }) {
-  const [showToast, setShowToast] = useState(show)
+  const [toasts, setToasts] = useState(() => {
+    const storedToasts = localStorage.getItem('toasts');
+    return storedToasts ? JSON.parse(storedToasts) : [];
+  });
 
   useEffect(() => {
-    setShowToast(show)
-  }, [show])
+    if (id !== 0) {
+      const newToast = { id, message, bg };
+      setToasts((prevToasts: any[]) => [...prevToasts, newToast]);
+      localStorage.setItem('toasts', JSON.stringify([...toasts, newToast]));
+    }
+  }, [id]);
+
+  const handleShowToast = (id: number) => {
+    const updatedToasts = toasts.filter((toast: any) => toast.id !== id);
+    setToasts(updatedToasts);
+    localStorage.setItem('toasts', JSON.stringify(updatedToasts));
+  };
+
   return (
-    <Toast
-      bg={bg}
-      onClose={() => setShowToast(false)}
-      show={showToast}
-      delay={4000}
-      autohide
-    >
-      <ToastHeader>
-        <strong className="me-auto">Notification</strong>
-      </ToastHeader>
-      <ToastBody style={{ color: 'white' }}>{message}</ToastBody>
-    </Toast>
-  )
+    <ToastContainer className="position-absolute" style={{ top: '10vh', right: 10 }}>
+      {toasts.map((toast: any) => (
+        <Toast
+          key={toast.id}
+          bg={toast.bg}
+          onClose={() => handleShowToast(toast.id)}
+          delay={4000}
+          autohide
+        >
+          <ToastHeader>
+            <strong className="me-auto">Notification</strong>
+          </ToastHeader>
+          <ToastBody style={{ color: 'white' }}>{toast.message}</ToastBody>
+        </Toast>
+      ))}
+    </ToastContainer>
+  );
 }

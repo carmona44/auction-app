@@ -35,10 +35,18 @@ export default function CreateAuction() {
   const { justLoggedIn } = location.state as JustLoggedInState || false
   const [auctionModalShow, setAuctionModalShow] = useState(false)
   const [selected, setSelected] = useState<Auction | null>(null)
+  const [toastId, setToastId] = useState(0);
 
   if (!auctions?.length && justLoggedIn) {
     return <Navigate to="/buyer" />
   }
+
+  const handleHideModal = (event: string) => {
+    setModalShow(false);
+    if (event !== 'cancel') {
+      setToastId(Date.now());
+    }
+  };
 
   return (
     <Container>
@@ -71,14 +79,12 @@ export default function CreateAuction() {
           onHide={() => setAuctionModalShow(false)}
         />
       )}
-      <CreateAuctionModal show={modalShow} onHide={() => setModalShow(false)} />
-      <div className="position-absolute" style={{ top: '10vh', right: 10 }}>
-        <ToastMessage
-          show={!!createData}
-          message={`You successfully created on ${createData?.auction?.title}`}
-          bg="success"
-        />
-      </div>
+      <CreateAuctionModal show={modalShow} onHide={handleHideModal} />
+      <ToastMessage
+        id={toastId}
+        message={`You successfully created on ${createData?.auction?.title}`}
+        bg="success"
+      />
     </Container>
   )
 }

@@ -49,7 +49,7 @@ export function CreateAuctionModal({
   onHide,
 }: {
   show: boolean
-  onHide: () => void
+  onHide: Function
 }) {
   const categories = useMemo(() => Object.values(ItemCategory), [])
   const [value, setValue] = useState<Value>(new Date())
@@ -62,7 +62,7 @@ export function CreateAuctionModal({
       aria-labelledby="contained-modal-title-vcenter"
       centered
     >
-      <RouterForm method="post" onSubmit={onHide}>
+      <RouterForm method="post" onSubmit={() => onHide()}>
         <Modal.Header className="justify-content-center">
           <Modal.Title id="contained-modal-title-vcenter">
             Create your auction
@@ -145,7 +145,7 @@ export function CreateAuctionModal({
           <Button variant="primary" type="submit">
             Create Auction
           </Button>
-          <Button variant="secondary" type="button" onClick={onHide}>
+          <Button variant="secondary" type="button" onClick={() => onHide('cancel')}>
             Cancel
           </Button>
         </Modal.Footer>
