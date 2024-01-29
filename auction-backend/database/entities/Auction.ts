@@ -60,7 +60,7 @@ export class AuctionEntity extends BaseEntity {
     entity: () => BidEntity,
     mappedBy: 'auction',
     orphanRemoval: true,
-    orderBy: { price: QueryOrder.DESC }
+    orderBy: { price: QueryOrder.DESC, createdAt: QueryOrder.ASC }
   })
   bids = new Collection<BidEntity>(this)
 }

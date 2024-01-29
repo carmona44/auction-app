@@ -11,7 +11,7 @@ router.get('/buyer/:id', async (req: Request, res: Response) => {
       $not: { seller: req.params.id },
     },
     {
-      populate: ['seller'],
+      populate: ['seller', 'bids', 'bids.bidder'],
       orderBy: { terminateAt: QueryOrder.ASC },
       limit: Number(limit),
       offset: Number(page) * Number(limit),
@@ -26,7 +26,7 @@ router.get('/seller/:id', async (req: Request, res: Response) => {
       seller: req.params.id,
     },
     {
-      populate: ['bids']
+      populate: ['seller', 'bids', 'bids.bidder']
     }
   )
   res.json(auctions)

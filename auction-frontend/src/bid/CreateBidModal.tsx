@@ -9,6 +9,7 @@ import 'react-calendar/dist/Calendar.css'
 import 'react-clock/dist/Clock.css'
 import { timeLeft } from '../util/format-helper'
 import { useAuth } from '../auth/AuthProvider'
+import { getHighestBid } from '../util/highest-bid-helper'
 
 export async function action({ request }: { request: Request }) {
   const formData = await request.formData()
@@ -40,6 +41,8 @@ export function CreateBidModal({
   onHide: () => void
 }) {
   const { user } = useAuth()
+  const { currentPrice, highestBid } = getHighestBid(auction.bids)
+
   return (
     <Modal
       show={show}
@@ -67,7 +70,7 @@ export function CreateBidModal({
                 <p>
                   Price:{' '}
                   <span style={{ fontSize: '2rem', fontWeight: 'bold' }}>
-                    {auction.startPrice}
+                    {currentPrice}
                   </span>
                 </p>
               </Col>

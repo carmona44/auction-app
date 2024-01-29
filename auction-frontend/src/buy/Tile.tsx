@@ -3,11 +3,16 @@ import { Auction, AuctionStatus } from './Auction'
 import { Col, Container, ListGroupItem, Row } from 'react-bootstrap'
 import './Tile.scss'
 import { timeLeft } from '../util/format-helper'
+import { useAuth } from '../auth/AuthProvider'
+import { getHighestBid } from '../util/highest-bid-helper'
 
 export function AuctionTile({ auction }: { auction: Auction }) {
+  const { user } = useAuth();
   const expiresIn = useCallback((date: string) => timeLeft(date), [])
-  const { title, description, startPrice, terminateAt, status, seller } = auction;
-  const hasFinished: boolean = status === AuctionStatus.FINISHED;
+  const { title, description, terminateAt, status, seller } = auction
+  const hasFinished: boolean = status === AuctionStatus.FINISHED
+  const isSeller: boolean = user?.id === seller?.id
+  const { currentPrice, highestBid } = getHighestBid(auction.bids)
 
   return (
     <ListGroupItem
@@ -23,7 +28,7 @@ export function AuctionTile({ auction }: { auction: Auction }) {
           <Col className="d-flex justify-content-end">
             <p className="item">
               {
-                hasFinished
+                hasFinished && isSeller
                   ? `Finished at ${new Date(terminateAt).toLocaleDateString()}`
                   : expiresIn(terminateAt)
               }
@@ -32,9 +37,9 @@ export function AuctionTile({ auction }: { auction: Auction }) {
           <Col className="d-flex justify-content-end">
             <p className="item fw-bold">
               {
-                hasFinished
-                  ? `Won by ${seller.name}`
-                  : `${startPrice}€`
+                hasFinished && isSeller
+                  ? (highestBid ? `Won by ${highestBid?.bidder?.name}` : 'Item was not sold')
+                  : `${currentPrice}€`
               }
             </p>
           </Col>

@@ -9,6 +9,7 @@ import 'react-calendar/dist/Calendar.css'
 import 'react-clock/dist/Clock.css'
 import { timeLeft } from '../util/format-helper'
 import { useAuth } from '../auth/AuthProvider'
+import { getHighestBid } from '../util/highest-bid-helper'
 
 export function SellerAuctionModal({
   auction,
@@ -22,6 +23,7 @@ export function SellerAuctionModal({
   const { user } = useAuth()
   const hasFinished: boolean = auction.status === AuctionStatus.FINISHED
   const bidders = Array.from(new Set(auction.bids?.map(bid => bid.bidder))) as unknown as string[]
+  const { currentPrice, highestBid } = getHighestBid(auction.bids)
 
   return (
     <Modal
@@ -44,7 +46,11 @@ export function SellerAuctionModal({
             <Row className="justify-content-center align-items-center">
               <Col sm={{ span: 5, offset: 1 }}>
                 {
-                  hasFinished && (<p>Won by {auction.seller.name}</p>)
+                  hasFinished && (
+                    <p>
+                      {highestBid ? `Won by ${highestBid?.bidder?.name}` : 'Item was not sold'}
+                    </p>
+                  )
                 }
                 <p>
                   {
@@ -79,7 +85,7 @@ export function SellerAuctionModal({
                 <p>
                   Current price:{' '}
                   <span style={{ fontSize: '2rem', fontWeight: 'bold' }}>
-                    {auction.startPrice}
+                    {currentPrice}
                   </span>
                 </p>
               </Col>

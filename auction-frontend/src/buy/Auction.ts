@@ -33,7 +33,7 @@ export interface Auction {
   startPrice: number
   terminateAt: string
   status: AuctionStatus
-  bids?: Bid[]
+  bids: Bid[]
 }
 
 type ValuePiece = Date | null
