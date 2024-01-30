@@ -7,9 +7,9 @@ import { Auction, AuctionStatus } from '../buy/Auction'
 import 'react-datetime-picker/dist/DateTimePicker.css'
 import 'react-calendar/dist/Calendar.css'
 import 'react-clock/dist/Clock.css'
-import { timeLeft } from '../util/format-helper'
 import { useAuth } from '../auth/AuthProvider'
 import { getHighestBid } from '../util/highest-bid-helper'
+import useRealTimeRemaining from '../util/real-time-remaining-helper'
 
 export function SellerAuctionModal({
   auction,
@@ -24,6 +24,7 @@ export function SellerAuctionModal({
   const hasFinished: boolean = auction.status === AuctionStatus.FINISHED
   const bidders = Array.from(new Set(auction.bids?.map(bid => bid.bidder))) as unknown as string[]
   const { currentPrice, highestBid } = getHighestBid(auction)
+  const remainingTime = useRealTimeRemaining(auction.terminateAt)
 
   return (
     <Modal
@@ -56,7 +57,7 @@ export function SellerAuctionModal({
                   {
                     hasFinished
                       ? `Finished at ${new Date(auction.terminateAt).toLocaleDateString()}`
-                      : `Deadline: ${timeLeft(auction.terminateAt)}`
+                      : `Deadline: ${remainingTime}`
                   }
                 </p>
               </Col>

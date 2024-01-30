@@ -1,18 +1,17 @@
-import React, { useCallback } from 'react'
 import { Auction, AuctionStatus } from './Auction'
 import { Col, Container, ListGroupItem, Row } from 'react-bootstrap'
 import './Tile.scss'
-import { timeLeft } from '../util/format-helper'
 import { useAuth } from '../auth/AuthProvider'
 import { getHighestBid } from '../util/highest-bid-helper'
+import useRealTimeRemaining from '../util/real-time-remaining-helper'
 
 export function AuctionTile({ auction }: { auction: Auction }) {
   const { user } = useAuth();
-  const expiresIn = useCallback((date: string) => timeLeft(date), [])
-  const { title, description, terminateAt, status, seller } = auction
-  const hasFinished: boolean = status === AuctionStatus.FINISHED
-  const isSeller: boolean = user?.id === seller?.id
-  const { currentPrice, highestBid } = getHighestBid(auction)
+  const { title, description, terminateAt, status, seller } = auction;
+  const hasFinished: boolean = (status === AuctionStatus.FINISHED) || (new Date(terminateAt).getTime() < Date.now());
+  const isSeller: boolean = user?.id === seller?.id;
+  const { currentPrice, highestBid } = getHighestBid(auction);
+  const remainingTime = useRealTimeRemaining(terminateAt);
 
   return (
     <ListGroupItem
@@ -28,9 +27,9 @@ export function AuctionTile({ auction }: { auction: Auction }) {
           <Col className="d-flex justify-content-end">
             <p className="item">
               {
-                hasFinished && isSeller
+                hasFinished
                   ? `Finished at ${new Date(terminateAt).toLocaleDateString()}`
-                  : expiresIn(terminateAt)
+                  : remainingTime
               }
             </p>
           </Col>

@@ -1,4 +1,3 @@
-import React from 'react'
 import { Col, Container, Form, Row } from 'react-bootstrap'
 import Button from 'react-bootstrap/Button'
 import Modal from 'react-bootstrap/Modal'
@@ -7,10 +6,10 @@ import { Auction } from '../buy/Auction'
 import 'react-datetime-picker/dist/DateTimePicker.css'
 import 'react-calendar/dist/Calendar.css'
 import 'react-clock/dist/Clock.css'
-import { timeLeft } from '../util/format-helper'
 import { useAuth } from '../auth/AuthProvider'
 import { getHighestBid } from '../util/highest-bid-helper'
 import { checkIsValidBid } from '../util/validate-bid-helper'
+import useRealTimeRemaining from '../util/real-time-remaining-helper'
 
 export async function action({ request }: { request: Request }) {
   const formData = await request.formData()
@@ -49,6 +48,7 @@ export function CreateBidModal({
 }) {
   const { user } = useAuth()
   const { currentPrice, highestBid } = getHighestBid(auction)
+  const remainingTime = useRealTimeRemaining(auction.terminateAt);
 
   return (
     <Modal
@@ -71,7 +71,7 @@ export function CreateBidModal({
             <Row className="justify-content-center align-items-center">
               <Col sm={{ span: 5, offset: 1 }}>
                 <p>Seller: {auction.seller.name}</p>
-                <p>Deadline: {timeLeft(auction.terminateAt)}</p>
+                <p>Deadline: {remainingTime}</p>
               </Col>
               <Col sm={{ span: 5, offset: 1 }}>
                 <p>
