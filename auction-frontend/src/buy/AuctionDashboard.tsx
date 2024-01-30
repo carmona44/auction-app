@@ -10,15 +10,16 @@ import ToastMessage from '../util/Toast'
 
 export const loader = async () => {
   const userId = localStorage.getItem('user')
-  const auctions = await fetch(
+  const { auctions, count } = await fetch(
     `${process.env.REACT_APP_API_URL}/auctions/buyer/${userId}?page=0&limit=20`,
   ).then((res) => res.json())
 
-  return { auctions }
+  return { auctions, count }
 }
 
 type LoadAuctionData = {
-  auctions: Auction[]
+  auctions: Auction[],
+  count: number
 }
 
 type CreateBidData = {
@@ -26,7 +27,7 @@ type CreateBidData = {
 }
 
 export default function AuctionDashboard() {
-  const { auctions } = useLoaderData() as LoadAuctionData
+  const { auctions, count } = useLoaderData() as LoadAuctionData
   const createData = useActionData() as CreateBidData
   const [data, setData] = useState<Auction[]>([])
   const [page, setPage] = useState(0)
@@ -50,18 +51,22 @@ export default function AuctionDashboard() {
     const userId = localStorage.getItem('user')
     const nextPage = page + 1
     setPage(nextPage)
-    const nextData: Auction[] = await fetch(
+
+    const nextData: { auctions: Auction[], count: number } = await fetch(
       `${process.env.REACT_APP_API_URL}/auctions/buyer/${userId}?page=${nextPage}&limit=20`,
     ).then((res) => res.json())
-    setData([...data, ...nextData])
-    if (nextData.length < 20) setHasMore(false)
+
+    const nextAuctions = nextData.auctions
+    setData([...data, ...nextAuctions])
+
+    if (nextAuctions.length < 20) setHasMore(false)
   }
 
   return (
     <Container>
       {data.length && (
         <div className="mt-3 mb-1">
-          <strong>{data.length}</strong> auctions found:
+          <strong>{count}</strong> auctions found:
         </div>
       )}
       <InfiniteScroll
