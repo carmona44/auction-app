@@ -11,6 +11,8 @@ import {
 import { AuctionEntity, BidEntity, UserEntity } from '../database/entities'
 import { AuctionController, BidController, UserController } from './routes'
 import 'dotenv/config'
+import { handleEndedAuctionsCron } from './jobs/cron-jobs'
+import { NotificationsController } from './routes/notifications'
 
 export const DI = {} as {
   server: http.Server
@@ -45,6 +47,7 @@ export const init = (async () => {
   app.use('/auctions', AuctionController)
   app.use('/users', UserController)
   app.use('/bids', BidController)
+  app.use('/notifications', NotificationsController)
   app.use((req, res) => res.status(404).json({ message: 'No route found' }))
 
   DI.server = app.listen(port, () => {
@@ -52,4 +55,7 @@ export const init = (async () => {
       `MikroORM express TS example started at http://localhost:${port}`,
     )
   })
+
+  console.log('Init cronjobs');
+  handleEndedAuctionsCron.start();
 })()

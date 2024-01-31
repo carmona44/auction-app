@@ -31,3 +31,9 @@ export enum AuctionStatus {
   ON_HOLD = 'ON_HOLD',
   FINISHED = 'FINISHED',
 }
+
+export interface ToastData {
+  id: number;
+  message: string;
+  bg: string;
+}
